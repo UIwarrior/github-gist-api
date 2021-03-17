@@ -1,7 +1,7 @@
 import axiosInstance from "../../core/api";
 
 export const FETCH_GISTS_SUCCESS = "FETCH_USER_GISTS_SUCCESS";
-export const FETCH_FORKS_LOADING = "FETCH_USER_FORKs_LOADING";
+export const FETCH_GISTS_ERROR = "FETCH_USER_GISTS_ERROR";
 
 export function fetchGists ({ userName }) {
     let finalGistsData = [];
@@ -17,11 +17,16 @@ export function fetchGists ({ userName }) {
                         }
                         finalGistsData.push(element);
                     }));
-
+                
                 dispatch({
                     type: FETCH_GISTS_SUCCESS,
                     payload: finalGistsData
                 });
-            });
+            }).catch(error =>{
+                dispatch({
+                    type: FETCH_GISTS_ERROR,
+                    payload: error,
+                });
+            })
     };
 }

@@ -12,7 +12,7 @@ import './card.css';
  */
 
 
-const CardComponent = ({id, description, owner, files,forkData}) => {
+const CardComponent = ({id, description, owner, files,forkData, key}) => {
     return  (
         <Card className ="gistCard" key={id} >
         <Card.Body>

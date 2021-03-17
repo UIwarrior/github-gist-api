@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Col, Container, Form, Row, Badge, Image, Spinner, Alert } from 'react-bootstrap';
+import { Col, Container, Form, Row, Spinner } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { fetchGists } from '../../redux/actions';
 import './home.css';
-import CardComponent from '../../components/common/card';
+import CardComponent from '../../components/common/card/card';
+import NoDataComponent from '../../components/common/noDataFound';
 
-const Home = ({ fetchGists, gists }) => {
+const Home = ({ fetchGists, gists, error }) => {
 
     const [listofGists, setListOfGists] = useState([]);
     const [searchParam, setSearchParam] = useState(null);
+    const [noDataFound, setNoDataFound] = useState(null);
     const [isLoading, setLoading] = useState(false);
 
     /**
@@ -20,16 +22,31 @@ const Home = ({ fetchGists, gists }) => {
 
     const handleKeyDownEvent = (e) => {
         if (e.key === 'Enter') {
-            setSearchParam(e.target.value);
-            setLoading(true);
-            fetchGists({ userName: e.target.value });
+            if(e.target.value == null || e.target.value === ''){
+                alert("please enter a search term")
+            }
+            else{
+                setSearchParam(e.target.value);
+                setLoading(true);
+                fetchGists({ userName: e.target.value });
+            }
+            
         }
+    
     };
 
     useEffect(() => {
+        if((!gists.length && searchParam) || (error && Object.keys(error.error)).length){ 
+            setNoDataFound("Some error happened or No Gists Found for this user")
+        }
+        else{
+            setNoDataFound(null);
+        }
         setListOfGists(gists);
         setLoading(false);
+        setSearchParam("");
     }, [gists]);
+
 
     return (
         <>
@@ -46,14 +63,9 @@ const Home = ({ fetchGists, gists }) => {
                     }
                     {listofGists && listofGists.map(({id, description, files, owner, forkData}) => (
                         <CardComponent id = {id} description ={description} owner ={owner} files ={files} forkData = {forkData} />
-                    ))}
-                    {
-                        !listofGists.length && searchParam  && (
-                            <Alert variant="warning" className ="noGistsFound">
-                                No Gists Found
-                            </Alert>
-                        )
+                    ))
                     }
+                    {<NoDataComponent noDataFoundtext ={noDataFound}/>}
 
                 </Row>
             </Container>
@@ -69,7 +81,8 @@ Home.propTypes = {
 
 const mapStateToProps = state => {
     return {
-        gists: state.listOfGists.gists
+        gists: state.listOfGists.gists,
+        error: state.error,
     };
 };
 

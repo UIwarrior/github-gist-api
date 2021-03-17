@@ -9,7 +9,6 @@ import CardComponent from '../../components/common/card/card';
 import NoDataComponent from '../../components/common/noDataFound';
 
 const Home = ({ fetchGists, gists }) => {
-    console.log("props changed", gists);
 
     const [listofGists, setListOfGists] = useState([]);
     const [searchParam, setSearchParam] = useState(null);
@@ -37,7 +36,6 @@ const Home = ({ fetchGists, gists }) => {
     };
 
     useEffect(() => {
-        console.log("useeffect ran");
         if((!gists.listOfGists.data.length && searchParam) || (Object.keys(gists.listOfGists.error)).length){ 
             setNoDataFound("Some error happened or No Gists Found for this user")
         }

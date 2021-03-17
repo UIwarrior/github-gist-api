@@ -8,7 +8,8 @@ import './home.css';
 import CardComponent from '../../components/common/card/card';
 import NoDataComponent from '../../components/common/noDataFound';
 
-const Home = ({ fetchGists, gists, error }) => {
+const Home = ({ fetchGists, gists }) => {
+    console.log("props changed", gists);
 
     const [listofGists, setListOfGists] = useState([]);
     const [searchParam, setSearchParam] = useState(null);
@@ -36,13 +37,14 @@ const Home = ({ fetchGists, gists, error }) => {
     };
 
     useEffect(() => {
-        if((!gists.length && searchParam) || (error && Object.keys(error.error)).length){ 
+        console.log("useeffect ran");
+        if((!gists.listOfGists.data.length && searchParam) || (Object.keys(gists.listOfGists.error)).length){ 
             setNoDataFound("Some error happened or No Gists Found for this user")
         }
         else{
             setNoDataFound(null);
         }
-        setListOfGists(gists);
+        setListOfGists(gists.listOfGists.data);
         setLoading(false);
         setSearchParam("");
     }, [gists]);
@@ -76,13 +78,13 @@ const Home = ({ fetchGists, gists, error }) => {
 
 Home.propTypes = {
     fetchGists: PropTypes.func,
-    gists: PropTypes.array
+    data: PropTypes.array,
+    error: PropTypes.object
 };
 
 const mapStateToProps = state => {
     return {
-        gists: state.listOfGists.gists,
-        error: state.error,
+        gists: state.gists,
     };
 };
 

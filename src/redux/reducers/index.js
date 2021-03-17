@@ -1,7 +1,6 @@
 import { combineReducers } from 'redux';
-import { gistsSuccess, gistsError } from './gists';
+import { fetchGistsReducer } from './gists';
 
 export default combineReducers({
-    listOfGists: gistsSuccess,
-    error: gistsError,
+    gists: fetchGistsReducer
 });

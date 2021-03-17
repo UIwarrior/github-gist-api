@@ -1,19 +1,32 @@
 import axiosInstance from "../../core/api";
 
-const FETCH_GISTS_SUCCESS = "FETCH_USER_GISTS_SUCCESS";
-const FETCH_GISTS_ERROR = "FETCH_USER_GISTS_ERROR";
-const FETCH_GISTS_LOADING = "FETCH_USER_GISTS_LOADING";
+export const FETCH_GISTS_SUCCESS = "FETCH_USER_GISTS_SUCCESS";
+export const FETCH_GISTS_ERROR = "FETCH_USER_GISTS_ERROR";
 
 export function fetchGists ({ userName }) {
+    let finalGistsData = [];
     return (dispatch) => {
         axiosInstance.get(`/users/${userName}/gists`)
-            .then((response) => {
-                console.log("thunk fetching data");
-                console.log(response);
+            .then(async (response) => {
+                await Promise.all(
+                    response.data.map(async (element) => {
+                        const forksData = await axiosInstance.get(`/gists/${element.id}/forks`);
+                        if (forksData) {
+                            const forkData = await forksData.data;
+                            element.forkData = forkData;
+                        }
+                        finalGistsData.push(element);
+                    }));
+                
                 dispatch({
                     type: FETCH_GISTS_SUCCESS,
-                    payload: response.data
+                    payload: finalGistsData
                 });
-            });
+            }).catch(error =>{
+                dispatch({
+                    type: FETCH_GISTS_ERROR,
+                    payload: error,
+                });
+            })
     };
 }

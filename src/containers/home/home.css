@@ -1,0 +1,17 @@
+.gistsRow{
+    margin: 10px;
+}
+
+.gistsBadge {
+    margin: 5px;
+}
+
+
+.avatar {
+    width: 40px;
+    height: 40px;
+}
+
+.searchRow input{
+        margin: 20px 0px; 
+}

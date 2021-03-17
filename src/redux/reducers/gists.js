@@ -1,27 +1,27 @@
-export function gistsErrored(state = false, action) {
+import { FETCH_GISTS_SUCCESS, FETCH_GISTS_ERROR } from '../actions';
+const initialState = {
+    gists: [],
+    error: {},
+};
+
+export function gistsSuccess (state = initialState, action) {
     switch (action.type) {
-        case 'FETCH_GISTS_ERROR':
-            return action.hasErrored;
+        case FETCH_GISTS_SUCCESS:
+            state.gists = action.payload;
+            return { ...state };
 
         default:
             return state;
     }
 }
 
-export function gistsLoading(state = false, action) {
-    switch (action.type) {
-        case 'FETCH_GISTS_LOADING':
-            return action.isLoading;
 
-        default:
-            return state;
-    }
-}
-
-export function fetchGists (state = {}, action) {
+export function gistsError (state = initialState, action) {
     switch (action.type) {
-        case 'FETCH_GISTS_SUCCESS':
-            return { ...state, data: action.payload };
+        case FETCH_GISTS_ERROR:
+            state.error = action.payload;
+            state.gists = [];
+            return { ...state };
 
         default:
             return state;
